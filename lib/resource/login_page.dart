@@ -5,10 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:webspc/DTO/user.dart';
 import 'package:webspc/resource/forgot_password.dart';
 import 'register_page.dart';
-import 'home_page.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class LoginScreen extends StatefulWidget {
