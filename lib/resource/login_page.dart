@@ -29,42 +29,6 @@ class LoginPageState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
  
-  
-
-    Future<List<loginUser>> login(String inputemail, inputpassword) async {
-      bool check = false;
-    final response = await get(
-      Uri.parse('https://spsapiservice.azurewebsites.net/api/TbUsers'),
-      );
-        if(response.statusCode == 200){
-        var data = json.decode(response.body);
-        List<loginUser> listAccount=[];
-        for(var list in data){
-        loginUser Luser = 
-             loginUser( email: list['email'], pass: list['pass']);
-        listAccount.add(Luser);
-        
-        }
-          for(int i=0; i<listAccount.length;i++){
-          loginUser list1 = listAccount[i];   
-          if(inputemail == listAccount[i].email && inputpassword == listAccount[i].pass){
-           check = true;
-           break;
-          }else{
-            check = false;
-          }}
-          if(check == true){
-            _onLoginPress();
-          }else{
-            _btnLogin.reset();
-            emailController.clear();
-            passwordController.clear();
-          }
-         return listAccount;
-         }else{
-          throw Exception('fail');
-         }
-     }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
