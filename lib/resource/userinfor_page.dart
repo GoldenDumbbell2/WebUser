@@ -1,5 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:webspc/DTO/section.dart';
+import 'package:webspc/styles/button.dart';
+
+import '../DTO/user.dart';
 
 class UserInforScreen extends StatefulWidget {
   static const routeName = '/userScreen';
@@ -12,6 +18,64 @@ class UserInforScreen extends StatefulWidget {
 }
 
 class UserInforPageState extends State<UserInforScreen> {
+  loginUser? Users;
+  String? name;
+  String? email;
+  String? phone;
+  String? identity;
+  String? familyID;
+
+  String? familyIDcar;
+  String? CarName;
+  String? Carplate;
+  String? Carfont;
+  List<User> users = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    this.fecthUser();
+  }
+
+  @override
+  String loggedInUser = '';
+
+  Future fecthUser() async {
+    final response = await get(
+      Uri.parse('https://apiserverplan.azurewebsites.net/api/TbUsers'),
+    );
+    final responsecar = await get(
+      Uri.parse('https://apiserverplan.azurewebsites.net/api/TbCars'),
+    );
+    if (response.statusCode == 200 || responsecar.statusCode == 200) {
+      if (this.mounted) {
+        setState(() {
+          var items = json.decode(response.body);
+          String checkemail = Checksection.getLoggedInUser();
+          for (int i = 0; i < items.length; i++) {
+            if (items[i]['email'] == checkemail) {
+              name = items[i]['fullname'].toString();
+              email = items[i]['email'].toString();
+              phone = items[i]['phoneNumber'].toString();
+              identity = items[i]['identitiCard'].toString();
+              familyID = items[i]['familyId'].toString();
+            }
+          }
+
+          var itemscar = json.decode(responsecar.body);
+          for (int u = 0; u < itemscar.length; u++) {
+            if (familyID == itemscar[u]['familyId']) {
+              CarName = itemscar[u]['carName'];
+              Carplate = itemscar[u]['carPlate'];
+              Carfont = itemscar[u]['carPaperFront'];
+            }
+          }
+        });
+      }
+    }
+  }
+
   int selectedIndex = 0;
   int selectedCatIndex = 0;
   final RoundedLoadingButtonController _btnController =
@@ -81,7 +145,7 @@ class UserInforPageState extends State<UserInforScreen> {
                             decoration: TextDecoration.none,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.red),
+                            color: Colors.blue),
                       ),
                       SizedBox(
                         height: 5,
@@ -90,27 +154,26 @@ class UserInforPageState extends State<UserInforScreen> {
                         height: 180,
                         width: 200,
                         decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage("${Carfont}")),
                             border: Border.all(width: 1.0, color: Colors.black),
-                            // image: DecorationImage(
-                            //   image: AssetImage('images/toyota.png'),
-                            //   fit: BoxFit.cover,
-                            // ),
                             borderRadius: BorderRadius.circular(10)),
                       ),
-                      Text('Toyota',
+                      Text('$CarName',
                           style: TextStyle(
                               decoration: TextDecoration.none,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 20)),
-                      //Spacer(),
-                      Text('61A-1234.5',
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text('$Carplate',
                           style: TextStyle(
                               decoration: TextDecoration.none,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 20)),
-
                       Text(
                         '--------------------------------------------------------------------------------',
                         style: TextStyle(
@@ -120,21 +183,38 @@ class UserInforPageState extends State<UserInforScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
+                      const Text(
                         'USER INFORMATION',
                         style: TextStyle(
                             decoration: TextDecoration.none,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.red),
+                            color: Colors.blue),
                       ),
-
                       Container(
-                        width: 250,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            // suffixIcon: Icon(FontAwesomeIcons.envelope,size: 17,),
+                        child: TextButton(
+                          onPressed: () => {},
+                          // padding: const EdgeInsets.all(0.0),
+                          style: userstylebutton,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Row(
+                              children: [
+                                Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(
+                                      Icons.email_sharp,
+                                      color: Colors.black,
+                                    )),
+                                Container(
+                                    margin: const EdgeInsets.only(left: 50),
+                                    child: Text(
+                                      "$email",
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.black),
+                                    ))
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -142,11 +222,29 @@ class UserInforPageState extends State<UserInforScreen> {
                         height: 5,
                       ),
                       Container(
-                        width: 250,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Full Name',
-                            // suffixIcon: Icon(FontAwesomeIcons.envelope,size: 17,),
+                        child: TextButton(
+                          onPressed: () {},
+                          // padding: const EdgeInsets.all(0.0),
+                          style: userstylebutton,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Row(
+                              children: [
+                                Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(
+                                      Icons.phone_android,
+                                      color: Colors.black,
+                                    )),
+                                Container(
+                                    margin: const EdgeInsets.only(left: 50),
+                                    child: Text(
+                                      "$phone",
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.black),
+                                    ))
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -154,11 +252,29 @@ class UserInforPageState extends State<UserInforScreen> {
                         height: 5,
                       ),
                       Container(
-                        width: 250,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Phone Number',
-                            // suffixIcon: Icon(FontAwesomeIcons.envelope,size: 17,),
+                        child: TextButton(
+                          onPressed: null,
+                          // padding: const EdgeInsets.all(0.0),
+                          style: userstylebutton,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Row(
+                              children: [
+                                Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(
+                                      Icons.account_box,
+                                      color: Colors.black,
+                                    )),
+                                Container(
+                                    margin: const EdgeInsets.only(left: 50),
+                                    child: Text(
+                                      "$name",
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.black),
+                                    ))
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -166,11 +282,29 @@ class UserInforPageState extends State<UserInforScreen> {
                         height: 5,
                       ),
                       Container(
-                        width: 250,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Identity',
-                            // suffixIcon: Icon(FontAwesomeIcons.envelope,size: 17,),
+                        child: TextButton(
+                          onPressed: null,
+                          // padding: const EdgeInsets.all(0.0),
+                          style: userstylebutton,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Row(
+                              children: [
+                                Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(
+                                      Icons.perm_identity_sharp,
+                                      color: Colors.black,
+                                    )),
+                                Container(
+                                    margin: const EdgeInsets.only(left: 50),
+                                    child: Text(
+                                      "$identity",
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.black),
+                                    ))
+                              ],
+                            ),
                           ),
                         ),
                       ),
