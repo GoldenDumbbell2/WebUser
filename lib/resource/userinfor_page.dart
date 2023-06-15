@@ -4,16 +4,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:webspc/Api_service/login_service.dart';
 import 'package:webspc/DTO/cars.dart';
 import 'package:webspc/DTO/section.dart';
 import 'package:webspc/styles/button.dart';
-import '../DTO/user.dart';
+import '../Api_service/car_detail_service.dart';
 
 class UserInforScreen extends StatefulWidget {
   static const routeName = '/userScreen';
-  final BuildContext? context;
 
-  const UserInforScreen(this.context, {Key? key}) : super(key: key);
+  const UserInforScreen({super.key});
 
   @override
   UserInforPageState createState() => UserInforPageState();
@@ -25,96 +25,47 @@ class UserInforPageState extends State<UserInforScreen> {
   int selectedIndex = 0;
   int selectedCatIndex = 0;
 
-  loginUser? Users;
   String? userId;
-  String? name;
-  String? email;
-  String? pass;
-  String? phone;
-  String? identity;
-  String? familyID;
-
-  String? familyIDcar;
-  String? CarName;
-  String? Carplate;
-  String? Carfont;
-  List<User> users = [];
-  List<car> carlist = [];
-  List<cars> carlist1 = [];
-  bool isLoading = true;
   String? textFiledPhone;
+  List<Car> listCar = [];
+  Car? carDetail;
+  bool isLoading = true;
 
   @override
   void initState() {
+    getListCar();
     super.initState();
-    fecthUser();
   }
 
-  @override
-  String loggedInUser = '';
-
-  Future fecthUser() async {
+  void loading() {
     setState(() {
-      isLoading = true;
+      isLoading = false;
+      LoginService.update().then((value) => setState(
+            () {},
+          ));
     });
-    final response = await get(
-      Uri.parse('https://apiserverplan.azurewebsites.net/api/TbUsers'),
-    );
-    final responsecar = await get(
-      Uri.parse('https://apiserverplan.azurewebsites.net/api/TbCars'),
-    );
-    if (response.statusCode == 200 || responsecar.statusCode == 200) {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-          var items = json.decode(response.body);
-          String checkemail = Checksection.getLoggedInUser();
-          for (int i = 0; i < items.length; i++) {
-            if (items[i]['email'] == checkemail) {
-              userId = items[i]['userId'].toString();
-              name = items[i]['fullname'].toString();
-              email = items[i]['email'].toString();
-              pass = items[i]['pass'].toString();
-              phone = items[i]['phoneNumber'].toString();
-              identity = items[i]['identitiCard'].toString();
-              familyID = items[i]['familyId'].toString();
-            }
-          }
+  }
 
-          var itemscar = json.decode(responsecar.body);
-          for (var i in itemscar) {
-            car Cars = car(
-                namecar: i['carName'],
-                carplate: i['carPlate'],
-                carfont: i['carPaperFront'],
-                familyId: i['familyId']);
-            carlist.add(Cars);
+  void getListCar() {
+    CarDetailService.getListCar().then((response) => setState(() {
+          isLoading = false;
+          listCar = response;
+          if (listCar.isNotEmpty) {
+            carDetail = listCar.first;
           }
-          for (int u = 0; u < carlist.length; u++) {
-            if (familyID == carlist[u].familyId) {
-              cars Car1 = cars(
-                  namecar: carlist[u].namecar,
-                  carplate: carlist[u].carplate,
-                  carfont: carlist[u].carfont);
-              carlist1.add(Car1);
-            }
-          }
-          // }
-          // }
-        });
-      }
-    }
+        }));
   }
 
   Future updatePhoneNumber(String phoneNumber) {
+    userId = Session.loggedInUser.userId;
     final body = jsonEncode(<String, String>{
-      'userId': userId!,
+      'userId': Session.loggedInUser.userId!,
       'phoneNumber': phoneNumber,
-      'email': email!,
-      'pass': pass!,
-      'fullname': name!,
-      'identitiCard': identity!,
-      'familyId': familyID!,
+      'email': Session.loggedInUser.email!,
+      'pass': Session.loggedInUser.pass!,
+      'fullname': Session.loggedInUser.fullname!,
+      'identitiCard': Session.loggedInUser.identitiCard!,
+      'familyId': Session.loggedInUser.familyId!,
     });
     return put(
       Uri.parse('https://apiserverplan.azurewebsites.net/api/TbUsers/$userId'),
@@ -144,14 +95,13 @@ class UserInforPageState extends State<UserInforScreen> {
           child: Column(
             children: <Widget>[
               Container(
-                height: size.height * 0.2,
+                height: size.height * 0.15,
                 child: Stack(
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.only(
                         left: 150,
                         right: 15,
-                        top: 10,
                       ),
                       height: size.height * 0.2 - 1,
                       child: Row(
@@ -172,7 +122,7 @@ class UserInforPageState extends State<UserInforScreen> {
                 ),
               ),
               Container(
-                height: 630,
+                height: 680,
                 width: 380,
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -201,47 +151,66 @@ class UserInforPageState extends State<UserInforScreen> {
                           height: 5,
                         ),
                         Container(
-                          height: 250,
-                          padding: EdgeInsets.only(left: 10, right: 10),
-                          child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: carlist1.length,
-                              separatorBuilder: (context, index) => SizedBox(
-                                    width: 12,
+                          height: 200,
+                          width: 350,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                              child: carDetail == null ||
+                                      carDetail?.carPaperFront == null ||
+                                      carDetail?.carId == ""
+                                  ? Image.asset(
+                                      "images/carrr.png",
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      carDetail!.carPaperFront!,
+                                      fit: BoxFit.cover,
+                                    )),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Container(
+                          height: 60,
+                          margin: const EdgeInsets.only(
+                              left: 5, right: 5, bottom: 10),
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: listCar.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    carDetail = listCar[index];
+                                  });
+                                },
+                                child: Container(
+                                  height: 50,
+                                  width: 60,
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    child:
+                                        listCar[index].carPaperFront == null ||
+                                                listCar[index].carId == ""
+                                            ? Image.asset(
+                                                "images/carrr.png",
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.network(
+                                                listCar[index].carPaperFront!,
+                                                fit: BoxFit.cover,
+                                              ),
                                   ),
-                              itemBuilder: (context, index) => Container(
-                                    width: 180,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                              carlist1[index].carfont),
-                                        ),
-                                        border: Border.all(
-                                            width: 1.0, color: Colors.black),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Column(children: [
-                                      SizedBox(
-                                        height: 190,
-                                      ),
-                                      Text(carlist1[index].namecar,
-                                          style: TextStyle(
-                                              decoration: TextDecoration.none,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20)),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(carlist1[index].carplate,
-                                          style: TextStyle(
-                                              decoration: TextDecoration.none,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20)),
-                                    ]),
-                                  )),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                         Text(
                           '--------------------------------------------------------------------------------',
@@ -278,7 +247,7 @@ class UserInforPageState extends State<UserInforScreen> {
                                   Container(
                                       margin: const EdgeInsets.only(left: 50),
                                       child: Text(
-                                        "$email",
+                                        Session.loggedInUser.email!,
                                         style: TextStyle(
                                             fontSize: 20.0,
                                             color: Colors.black),
@@ -292,6 +261,27 @@ class UserInforPageState extends State<UserInforScreen> {
                           height: 5,
                         ),
                         TextButton(
+                          style: userstylebutton,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Row(
+                              children: [
+                                const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Icon(
+                                      Icons.phone_android,
+                                      color: Colors.black,
+                                    )),
+                                Container(
+                                    margin: const EdgeInsets.only(left: 50),
+                                    child: Text(
+                                      '${Session.loggedInUser.phoneNumber}',
+                                      style: const TextStyle(
+                                          fontSize: 20.0, color: Colors.black),
+                                    ))
+                              ],
+                            ),
+                          ),
                           onPressed: () {
                             showModalBottomSheet<void>(
                               context: context,
@@ -391,13 +381,12 @@ class UserInforPageState extends State<UserInforScreen> {
                                                 color: const Color.fromRGBO(
                                                     20, 160, 240, 1.0),
                                                 controller: _btnSave,
-                                                // onPressed: _onLoginPress,
                                                 onPressed: () {
                                                   if (textFiledPhone != null) {
                                                     updatePhoneNumber(
                                                             textFiledPhone!)
                                                         .then((value) =>
-                                                            fecthUser());
+                                                            loading());
                                                   }
                                                   Navigator.pop(context);
                                                 },
@@ -417,27 +406,6 @@ class UserInforPageState extends State<UserInforScreen> {
                               },
                             );
                           },
-                          style: userstylebutton,
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Row(
-                              children: [
-                                const Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Icon(
-                                      Icons.phone_android,
-                                      color: Colors.black,
-                                    )),
-                                Container(
-                                    margin: const EdgeInsets.only(left: 50),
-                                    child: Text(
-                                      "$phone",
-                                      style: const TextStyle(
-                                          fontSize: 20.0, color: Colors.black),
-                                    ))
-                              ],
-                            ),
-                          ),
                         ),
                         SizedBox(
                           height: 5,
@@ -459,7 +427,7 @@ class UserInforPageState extends State<UserInforScreen> {
                                   Container(
                                       margin: const EdgeInsets.only(left: 50),
                                       child: Text(
-                                        "$name",
+                                        "${Session.loggedInUser.fullname}",
                                         style: TextStyle(
                                             fontSize: 20.0,
                                             color: Colors.black),
@@ -489,7 +457,7 @@ class UserInforPageState extends State<UserInforScreen> {
                                   Container(
                                       margin: const EdgeInsets.only(left: 50),
                                       child: Text(
-                                        "$identity",
+                                        "${Session.loggedInUser.identitiCard}",
                                         style: TextStyle(
                                             fontSize: 20.0,
                                             color: Colors.black),
