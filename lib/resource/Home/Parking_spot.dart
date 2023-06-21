@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:webspc/resource/Home/home_page.dart';
 import 'package:webspc/styles/button.dart';
 import '../../Api_service/spot_service.dart';
+import '../../DTO/cars.dart';
+import '../../DTO/section.dart';
 import '../../DTO/spot.dart';
+import '../../DTO/user.dart';
+import '../Login&Register/login_page.dart';
+import '../Profile/car_detail_screen.dart';
+import '../Profile/car_register_screen.dart';
+import '../Profile/topup_page.dart';
+import '../Profile/userinfor_page.dart';
+import 'View_hisbooking.dart';
 
 class viewSpotPage extends StatefulWidget {
   static const routerName = 'ViewSpotPage';
@@ -41,31 +50,142 @@ class _ViewSpotState extends State<viewSpotPage> {
       return const Center(child: CircularProgressIndicator());
     } else {
       return Scaffold(
-        backgroundColor: Color(0xfffbf9f9),
+        // backgroundColor: Color(0xfffbf9f9),
         appBar: AppBar(
-          elevation: 4,
-          // centerTitle: false,
-          // automaticallyImplyLeading: false,
-          backgroundColor: Color(0xff3a57e8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-          ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.all(0),
+              child: Row(children: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreen(context)));
+                    },
+                    child: Text(
+                      "Home",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    )),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const UserInforScreen()));
+                  },
+                  child: Text(
+                    "Information Account",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CarDetailScreen()));
+                    },
+                    child: Text(
+                      "Information Car",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    )),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CarRegisterScreen()));
+                  },
+                  child: Text(
+                    "Register Car",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TopupScreen(context)));
+                  },
+                  child: Text(
+                    "Top up",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ViewHistoryPage(context)));
+                  },
+                  child: Text(
+                    "History",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                    onPressed: () {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Do you want to logout?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Session.loggedInUser = Users(userId: "0");
+                                Session.carUserInfor = Car();
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          LoginScreen(context)),
+                                  (route) => false,
+                                );
+                              },
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Log Out",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    )),
+                SizedBox(
+                  width: 300,
+                )
+              ]),
+            )
+          ],
           title: Text(
-            "Parking Spot (S101 Floor 1)",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.normal,
-              fontSize: 20,
-              color: Color(0xff000000),
-            ),
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 24),
-            color: Color(0xff212435),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen(context)));
-            },
+            " Smart Parking System",
+            style: TextStyle(color: Colors.black),
           ),
         ),
         body: Column(
@@ -75,8 +195,8 @@ class _ViewSpotState extends State<viewSpotPage> {
           children: [
             Container(
               margin: EdgeInsets.all(0),
-              padding: EdgeInsets.only(top: 10),
-              height: 1100,
+              padding: EdgeInsets.only(top: 10, left: 110),
+              height: 1200,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Color(0x1f000000),
@@ -100,8 +220,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -131,8 +251,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -161,14 +281,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                               ),
                         SizedBox(
                           height: 16,
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[10].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -198,8 +318,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -228,14 +348,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                               ),
                         SizedBox(
                           height: 16,
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[17].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -265,8 +385,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -307,8 +427,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -338,8 +458,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -368,14 +488,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                               ),
                         SizedBox(
                           height: 16,
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[9].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -406,8 +526,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -436,14 +556,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                                 ),
                               ),
                         SizedBox(
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[16].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -473,8 +593,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -515,8 +635,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -546,8 +666,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -575,14 +695,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                                 ),
                               ),
                         SizedBox(
-                          width: 200,
+                          width: 1400,
                         ),
                         listSpot[15].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -612,8 +732,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -654,8 +774,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -685,8 +805,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -715,13 +835,13 @@ class _ViewSpotState extends State<viewSpotPage> {
                               ),
                         SizedBox(
                           height: 16,
-                          width: 50,
+                          width: 600,
                         ),
                         Container(
                           margin: EdgeInsets.all(0),
                           padding: EdgeInsets.all(0),
-                          width: 100,
-                          height: 50,
+                          width: 200,
+                          height: 100,
                           decoration: BoxDecoration(
                             color: Color(0x1f000000),
                             shape: BoxShape.rectangle,
@@ -745,14 +865,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                           ),
                         ),
                         SizedBox(
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[14].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -782,8 +902,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -824,8 +944,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -855,8 +975,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -884,14 +1004,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                                 ),
                               ),
                         SizedBox(
-                          width: 200,
+                          width: 1400,
                         ),
                         listSpot[13].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -921,8 +1041,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -963,8 +1083,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -994,8 +1114,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -1024,14 +1144,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                               ),
                         SizedBox(
                           height: 16,
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[8].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -1062,8 +1182,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -1092,14 +1212,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                                 ),
                               ),
                         SizedBox(
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[12].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -1129,8 +1249,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -1171,8 +1291,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -1202,8 +1322,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -1232,14 +1352,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                               ),
                         SizedBox(
                           height: 16,
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[6].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -1269,8 +1389,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -1298,14 +1418,14 @@ class _ViewSpotState extends State<viewSpotPage> {
                                 ),
                               ),
                         SizedBox(
-                          width: 50,
+                          width: 600,
                         ),
                         listSpot[11].available == true
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
                                   shape: BoxShape.rectangle,
@@ -1335,8 +1455,8 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 100,
-                                height: 50,
+                                width: 200,
+                                height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.rectangle,
@@ -1376,16 +1496,16 @@ class _ViewSpotState extends State<viewSpotPage> {
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.bold,
                       fontStyle: FontStyle.normal,
-                      fontSize: 14,
+                      fontSize: 20,
                       color: Color(0xff000000),
                     ),
                   ),
                   //   ],
                   // ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(60, 10, 0, 5),
+                    padding: EdgeInsets.fromLTRB(300, 10, 0, 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1395,7 +1515,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1427,7 +1547,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1464,7 +1584,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1495,7 +1615,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1530,7 +1650,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1561,7 +1681,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1593,7 +1713,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1624,7 +1744,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1656,7 +1776,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1687,7 +1807,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1719,7 +1839,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1751,7 +1871,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1784,7 +1904,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(60, 20, 0, 5),
+                    padding: EdgeInsets.fromLTRB(300, 20, 0, 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1794,7 +1914,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1826,7 +1946,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1863,7 +1983,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1894,7 +2014,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1929,7 +2049,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -1960,7 +2080,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -1992,7 +2112,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -2023,7 +2143,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -2055,7 +2175,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -2086,7 +2206,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -2118,7 +2238,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             ? Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Color(0x1f000000),
@@ -2149,7 +2269,7 @@ class _ViewSpotState extends State<viewSpotPage> {
                             : Container(
                                 margin: EdgeInsets.all(0),
                                 padding: EdgeInsets.all(0),
-                                width: 50,
+                                width: 200,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -2182,82 +2302,85 @@ class _ViewSpotState extends State<viewSpotPage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(10, 20, 0, 5),
+                    padding: EdgeInsets.fromLTRB(50, 20, 0, 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(0),
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(10),
-                                bottomLeft: Radius.circular(10),
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10)),
-                            border:
-                                Border.all(color: Color(0x4d9e9e9e), width: 1),
-                          ),
-                          child: Align(
-                            alignment: Alignment(-0.1, 0.0),
-                            child: TextButton(
-                              onPressed: () {},
+                            height: 90,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  topLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                  topRight: Radius.circular(10)),
+                            ),
+                            child: Align(
+                              alignment: Alignment(-0.1, 0.0),
                               child: Text(
-                                "You",
-                                textAlign: TextAlign.start,
+                                "You are Here",
+                                textAlign: TextAlign.center,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontStyle: FontStyle.normal,
-                                  fontSize: 14,
+                                  fontSize: 20,
                                   color: Color(0xff000000),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                        // SizedBox(
-                        //   height: 16,
-                        //   width: 50,
-                        // ),
+                            ))
                       ],
                     ),
                   ),
 
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.start,
-                  //   crossAxisAlignment: CrossAxisAlignment.center,
-                  //   mainAxisSize: MainAxisSize.max,
-                  //   children: [],
-                  // ),
+                  Container(
+                    margin: EdgeInsets.all(0),
+                    padding: EdgeInsets.only(
+                      top: 10,
+                    ),
+                    child: ElevatedButton(
+                      style: buttonnav,
+                      onPressed: () {},
+                      child: Text(
+                        "Navigation",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14,
+                          color: Color(0xff000000),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
-            ),
-            Container(
-              margin: EdgeInsets.all(0),
-              padding: EdgeInsets.only(top: 10),
-              child: ElevatedButton(
-                style: buttonPrimary,
-                onPressed: () {},
-                child: Text(
-                  "Navigation",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
-                  ),
-                ),
-              ),
             )
+
+            // Container(
+            //   margin: EdgeInsets.all(0),
+            //   padding: EdgeInsets.only(top: 10),
+            //   child: ElevatedButton(
+            //     // style: buttonPrimary,
+            //     onPressed: () {},
+            //     child: Text(
+            //       "Navigation",
+            //       textAlign: TextAlign.start,
+            //       overflow: TextOverflow.clip,
+            //       style: TextStyle(
+            //         fontWeight: FontWeight.w400,
+            //         fontStyle: FontStyle.normal,
+            //         fontSize: 14,
+            //         color: Color(0xff000000),
+            //       ),
+            //     ),
+            //   ),
+            // )
           ],
         ),
       );

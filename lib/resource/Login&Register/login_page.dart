@@ -56,7 +56,7 @@ class LoginPageState extends State<LoginScreen> {
                 height: 15,
               ),
               const Text(
-                'Smart Packing System',
+                'Smart Parking System',
                 style: TextStyle(
                     color: Colors.orange,
                     fontSize: 30,

@@ -1,16 +1,25 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:webspc/Api_service/user_infor_service.dart';
 import 'package:webspc/resource/Home/Parking_spot.dart';
-import 'package:webspc/navigationbar.dart';
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:webspc/resource/Home/BookingScreen.dart';
 import 'package:webspc/resource/Home/View_hisbooking.dart';
+import 'package:webspc/resource/Profile/view_history.dart';
 import 'package:webspc/styles/button.dart';
 import '../../Api_service/car_detail_service.dart';
 import '../../DTO/cars.dart';
 import '../../DTO/section.dart';
 import 'dart:math';
+
+import '../../DTO/user.dart';
+import '../Login&Register/login_page.dart';
+import '../Profile/car_detail_screen.dart';
+import '../Profile/car_register_screen.dart';
+import '../Profile/topup_page.dart';
+import '../Profile/userinfor_page.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -33,10 +42,15 @@ class HomePageState extends State<HomeScreen> {
   Car? dropdownValue;
   String? Carplate;
 
-  List<ExactAssetImage> listImgCarousel = const [
-    ExactAssetImage('images/logo.png'),
-    ExactAssetImage('images/chat.png'),
+  List imageList = [
+    {"id": 1, "image_path": 'images/slider2.jpg'},
+    {"id": 2, "image_path": 'images/slider.jpg'},
+    {"id": 3, "image_path": 'images/slider3.jpg'}
+    // {"id": 2, "image_path": 'assets/images/bestsellersbanner.png'},
+    // {"id": 3, "image_path": 'assets/images/banner.png'}
   ];
+  final CarouselController carouselController = CarouselController();
+  int currentIndex = 0;
 
   @override
   void initState() {
@@ -61,13 +75,142 @@ class HomePageState extends State<HomeScreen> {
     String currentTime = DateFormat('yyyy-MM-dd  kk:mm').format(now);
 
     return Scaffold(
-      drawer: buildBottomNavigationBar(selectedCatIndex, context),
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(0),
+            child: Row(children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomeScreen(context)));
+                  },
+                  child: Text(
+                    "Home",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  )),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserInforScreen()));
+                },
+                child: Text(
+                  "Information Account",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CarDetailScreen()));
+                  },
+                  child: Text(
+                    "Information Car",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  )),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CarRegisterScreen()));
+                },
+                child: Text(
+                  "Register Car",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TopupScreen(context)));
+                },
+                child: Text(
+                  "Top up",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ViewUserHistoryPage(context)));
+                },
+                child: Text(
+                  "History",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                  onPressed: () {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Do you want to logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Session.loggedInUser = Users(userId: "0");
+                              Session.carUserInfor = Car();
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen(context)),
+                                (route) => false,
+                              );
+                            },
+                            child: const Text('Yes'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Log Out",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  )),
+              SizedBox(
+                width: 300,
+              )
+            ]),
+          )
+        ],
         title: Text(
           " Smart Parking System",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
         ),
-        backgroundColor: Colors.white,
       ),
       // drawer: NavigationDrawer(),
       body: Container(
@@ -84,16 +227,37 @@ class HomePageState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              children: [
-                Container(
-                  height: 1100,
-                  width: 600,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                )
-              ],
+            Container(
+              padding: EdgeInsets.only(top: 10),
+              height: 1200,
+              width: 600,
+              child: CarouselSlider(
+                items: imageList
+                    .map(
+                      (item) => Image.asset(
+                        item['image_path'],
+                        fit: BoxFit.cover,
+
+                        // height: double.maxFinite,
+                      ),
+                    )
+                    .toList(),
+                carouselController: carouselController,
+                options: CarouselOptions(
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  autoPlay: true,
+                  aspectRatio: 2,
+                  viewportFraction: 1,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 20,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -118,9 +282,9 @@ class HomePageState extends State<HomeScreen> {
                     ),
                     Text('Hello, ${Session.loggedInUser.fullname ?? ""}',
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20)),
+                            fontSize: 30)),
                     SizedBox(
                       width: 130,
                     ),
@@ -217,10 +381,9 @@ class HomePageState extends State<HomeScreen> {
                 Container(
                     padding: EdgeInsets.only(top: 10),
                     child: Text(
-                      '------------------------------------------------------------------------------------------------------------------------------',
+                      '-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------',
                       style: TextStyle(
-                          decoration: TextDecoration.none,
-                          color: Color.fromARGB(100, 161, 125, 17)),
+                          decoration: TextDecoration.none, color: Colors.white),
                     )),
                 Container(
                   // decoration: BoxDecoration(
@@ -237,7 +400,7 @@ class HomePageState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                       height: 200,
-                      width: 420,
+                      width: 900,
                       decoration: BoxDecoration(
                           color: Colors.black,
                           border: Border.all(
@@ -258,277 +421,303 @@ class HomePageState extends State<HomeScreen> {
                         ],
                       )),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ElevatedButton(
-                    style: buttonPrimary,
-                    onPressed: () {
-                      Navigator.pushNamed(context, Booking1Screen.routerName);
-                    },
-                    child: Text(
-                      'Booking',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                Column(),
+                Row(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ElevatedButton.icon(
+                      style: buttonPrimary,
+                      onPressed: () {
+                        Navigator.pushNamed(context, Booking1Screen.routerName);
+                      },
+                      icon: Icon(
+                        Icons.book_online,
+                        size: 50,
+                      ),
+                      label: Text(
+                        'BOOKING',
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ElevatedButton.icon(
-                    style: buttonPrimary,
-                    onPressed: () {
-                      Navigator.pushNamed(context, viewSpotPage.routerName);
-                    },
-                    icon: Icon(
-                      Icons.directions_car_outlined,
-                      size: 50,
-                    ),
-                    label: Text(
-                      'CHECK SPOT',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ElevatedButton.icon(
+                      style: buttonPrimary,
+                      onPressed: () {
+                        Navigator.pushNamed(context, viewSpotPage.routerName);
+                      },
+                      icon: Icon(
+                        Icons.directions_car_outlined,
+                        size: 50,
+                      ),
+                      label: Text(
+                        'CHECK SPOT',
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ElevatedButton.icon(
-                    style: buttonPrimary,
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.directions_car_outlined,
-                      size: 50,
+                ]),
+                Row(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ElevatedButton.icon(
+                      style: buttonPrimary,
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, ViewHistoryPage.routerName);
+                      },
+                      icon: Icon(
+                        Icons.history_edu,
+                        size: 50,
+                      ),
+                      label: Text('YOUR BOOKING',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold)),
                     ),
-                    label: Text('CHECK YOUR CAR'),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ElevatedButton.icon(
-                    style: buttonPrimary,
-                    onPressed: () {
-                      setState(() {
-                        code = dropdownValue?.carPlate;
-                        var rng = Random();
-                        for (var i = 100000; i < 1000000; i++) {
-                          Codesecurity = rng.nextInt(1000000).toString();
-                          break;
-                        }
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ElevatedButton.icon(
+                      style: buttonPrimary,
+                      onPressed: () {
+                        setState(() {
+                          code = dropdownValue?.carPlate;
+                          var rng = Random();
+                          for (var i = 100000; i < 1000000; i++) {
+                            Codesecurity = rng.nextInt(1000000).toString();
+                            break;
+                          }
 
-                        DateTime now = DateTime.now();
-                        String formattedDate =
-                            DateFormat('yyyy-MM-dd – kk:mm').format(now);
-                      });
-                      if (dropdownValue?.carPlate == null) {
-                        showDialog(
-                            context: context,
-                            builder: (context) => Form(
-                                    child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 60,
-                                      right: 60,
-                                      top: 350,
-                                      bottom: 400),
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 9, top: 30),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.8),
-                                        border: Border.all(
-                                            width: 2.0,
-                                            color: Color.fromARGB(
-                                                100, 161, 125, 17)),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: const Text(
-                                      "Please choose your car!",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          decoration: TextDecoration.none,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                )));
-                      } else if (dropdownValue?.verifyState1 == null ||
-                          dropdownValue?.verifyState1 == false) {
-                        showDialog(
-                            context: context,
-                            builder: (context) => Form(
-                                    child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 40,
-                                      right: 40,
-                                      top: 350,
-                                      bottom: 390),
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 9),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.8),
-                                        border: Border.all(
-                                            width: 2.0,
-                                            color: Color.fromARGB(
-                                                100, 161, 125, 17)),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: const Text(
-                                      "*Your car is not authenticated state 1!\n*Please waiting for admin to authenticated state 1",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          decoration: TextDecoration.none,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                )));
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (context) => Form(
-                                    child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 60,
-                                      right: 60,
-                                      top: 150,
-                                      bottom: 200),
-                                  child: Container(
-                                      height: 5,
-                                      width: 5,
+                          DateTime now = DateTime.now();
+                          String formattedDate =
+                              DateFormat('yyyy-MM-dd – kk:mm').format(now);
+                        });
+                        if (dropdownValue?.carPlate == null) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Form(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 790,
+                                        right: 790,
+                                        top: 500,
+                                        bottom: 500),
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.only(left: 9, top: 30),
                                       decoration: BoxDecoration(
-                                          color: Colors.white,
+                                          color: Colors.white.withOpacity(0.8),
                                           border: Border.all(
                                               width: 2.0,
                                               color: Color.fromARGB(
                                                   100, 161, 125, 17)),
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          const Text('Your QR Code',
-                                              style: TextStyle(
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  color: Colors.black,
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(
-                                              left: 20,
-                                              right: 20,
-                                            ),
-                                            child: Text(
-                                                'Please present your QR code to the parking lot',
-                                                style: TextStyle(
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  color: Colors.grey,
-                                                  fontSize: 8,
-                                                )),
-                                          ),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          code == ''
-                                              ? Text('')
-                                              : BarcodeWidget(
-                                                  barcode: Barcode.qrCode(
-                                                    errorCorrectLevel:
-                                                        BarcodeQRCorrectionLevel
-                                                            .high,
-                                                  ),
-                                                  data:
-                                                      'carplate: ${dropdownValue?.carPlate} \ntime: $currentTime \nHint code: $Codesecurity',
-                                                  width: 200,
-                                                  height: 200,
-                                                ),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(
-                                              left: 60,
-                                              // right: 60,
-                                            ),
-                                            child: Row(
-                                              children: <Widget>[
-                                                Image.asset(
-                                                  'images/carrr.png',
-                                                  fit: BoxFit.cover,
-                                                  width: 30,
-                                                  height: 30,
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                    '${dropdownValue?.carPlate}',
-                                                    style: const TextStyle(
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 20)),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            width: 250,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                border: Border.all(
-                                                    width: 3.0,
-                                                    color: Colors.blue),
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  'Time In',
+                                      child: const Text(
+                                        "Please choose your car!",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            decoration: TextDecoration.none,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                  )));
+                        } else if (dropdownValue?.verifyState1 == null ||
+                            dropdownValue?.verifyState1 == false) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Form(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 790,
+                                        right: 790,
+                                        top: 500,
+                                        bottom: 500),
+                                    child: Container(
+                                      padding: EdgeInsets.only(left: 9),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.8),
+                                          border: Border.all(
+                                              width: 2.0,
+                                              color: Color.fromARGB(
+                                                  100, 161, 125, 17)),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: const Text(
+                                        "*Your car is not authenticated state 1!\n*Please waiting for admin to authenticated state 1",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            decoration: TextDecoration.none,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                  )));
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Form(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 800,
+                                          right: 800,
+                                          top: 150,
+                                          bottom: 600),
+                                      child: Container(
+                                          height: 5,
+                                          width: 5,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                  width: 2.0,
+                                                  color: Color.fromARGB(
+                                                      100, 161, 125, 17)),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                              const Text('Your QR Code',
                                                   style: TextStyle(
                                                       decoration:
                                                           TextDecoration.none,
-                                                      fontSize: 15,
+                                                      color: Colors.black,
+                                                      fontSize: 30,
                                                       fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.black),
+                                                          FontWeight.bold)),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                  left: 20,
+                                                  right: 20,
                                                 ),
-                                                Text(
-                                                  "${now}",
-                                                  style: TextStyle(
+                                                child: Text(
+                                                    'Please present your QR code to the parking lot',
+                                                    style: TextStyle(
                                                       decoration:
                                                           TextDecoration.none,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Color.fromARGB(
-                                                          255, 26, 145, 243)),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
-                                )));
-                      }
-                      ;
-                    },
-                    icon: Icon(
-                      Icons.qr_code,
-                      size: 50,
+                                                      color: Colors.grey,
+                                                      fontSize: 8,
+                                                    )),
+                                              ),
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                              code == ''
+                                                  ? Text('')
+                                                  : BarcodeWidget(
+                                                      barcode: Barcode.qrCode(
+                                                        errorCorrectLevel:
+                                                            BarcodeQRCorrectionLevel
+                                                                .high,
+                                                      ),
+                                                      data:
+                                                          'carplate: ${dropdownValue?.carPlate} \ntime: $currentTime \nHint code: $Codesecurity',
+                                                      width: 200,
+                                                      height: 200,
+                                                    ),
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                  left: 80,
+                                                  // right: 60,
+                                                ),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Image.asset(
+                                                      'images/carrr.png',
+                                                      fit: BoxFit.cover,
+                                                      width: 30,
+                                                      height: 30,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 40,
+                                                    ),
+                                                    Text(
+                                                        '${dropdownValue?.carPlate}',
+                                                        style: const TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .none,
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20)),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                              Container(
+                                                height: 50,
+                                                width: 250,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                        width: 3.0,
+                                                        color: Colors.blue),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      'Time In',
+                                                      style: TextStyle(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .none,
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black),
+                                                    ),
+                                                    Text(
+                                                      "${now}",
+                                                      style: TextStyle(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .none,
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              26,
+                                                              145,
+                                                              243)),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          )),
+                                    ),
+                                  ));
+                        }
+                        ;
+                      },
+                      icon: Icon(
+                        Icons.qr_code,
+                        size: 50,
+                      ),
+                      label: Text('GENERATE QR',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold)),
                     ),
-                    label: Text('Generate QR Code'),
                   ),
-                ),
+                ])
               ],
             ),
           ],

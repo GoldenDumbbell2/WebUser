@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
 
 final ButtonStyle buttonPrimary = ElevatedButton.styleFrom(
-    minimumSize: Size(350, 64),
-    primary: Color.fromARGB(100, 81, 81, 81),
+    minimumSize: Size(450, 200),
+    primary: Color.fromARGB(99, 56, 55, 55),
     elevation: 0,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
       Radius.circular(50),
     )));
-
+final ButtonStyle buttonBooking = ElevatedButton.styleFrom(
+    minimumSize: Size(450, 200),
+    primary: Color.fromARGB(99, 56, 55, 55),
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+      Radius.circular(50),
+    )));
+final ButtonStyle buttonUpdate = ElevatedButton.styleFrom(
+    minimumSize: Size(350, 200),
+    primary: Color.fromARGB(99, 56, 55, 55),
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+      Radius.circular(50),
+    )));
+final ButtonStyle buttonnav = ElevatedButton.styleFrom(
+    minimumSize: Size(350, 100),
+    primary: Color.fromARGB(99, 56, 55, 55),
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+      Radius.circular(50),
+    )));
 final ButtonStyle userstylebutton = ElevatedButton.styleFrom(
     minimumSize: Size(350, 64),
     primary: Color.fromARGB(99, 244, 243, 243),

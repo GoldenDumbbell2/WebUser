@@ -11,6 +11,14 @@ import 'package:webspc/styles/button.dart';
 import '../../../DTO/spot.dart';
 import '../../Api_service/car_detail_service.dart';
 import '../../DTO/cars.dart';
+import '../../DTO/user.dart';
+import '../Login&Register/login_page.dart';
+import '../Profile/car_detail_screen.dart';
+import '../Profile/car_register_screen.dart';
+import '../Profile/topup_page.dart';
+import '../Profile/userinfor_page.dart';
+import 'View_hisbooking.dart';
+import 'home_page.dart';
 
 class Booking1Screen extends StatefulWidget {
   static const routerName = 'booking1Screen';
@@ -68,20 +76,155 @@ class _BookingPage1State extends State<Booking1Screen> {
     spacing:
     20;
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(0),
+            child: Row(children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomeScreen(context)));
+                  },
+                  child: Text(
+                    "Home",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  )),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserInforScreen()));
+                },
+                child: Text(
+                  "Information Account",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CarDetailScreen()));
+                  },
+                  child: Text(
+                    "Information Car",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  )),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CarRegisterScreen()));
+                },
+                child: Text(
+                  "Register Car",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TopupScreen(context)));
+                },
+                child: Text(
+                  "Top up",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ViewHistoryPage(context)));
+                },
+                child: Text(
+                  "History",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                  onPressed: () {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Do you want to logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('No'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Session.loggedInUser = Users(userId: "0");
+                              Session.carUserInfor = Car();
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen(context)),
+                                (route) => false,
+                              );
+                            },
+                            child: const Text('Yes'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Log Out",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  )),
+              SizedBox(
+                width: 300,
+              )
+            ]),
+          )
+        ],
+        title: Text(
+          " Smart Parking System",
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: Align(
         alignment: Alignment.topCenter,
         child: Container(
           margin: EdgeInsets.all(0),
           padding: EdgeInsets.all(0),
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+          // height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.zero,
               border: Border.all(color: Color(0xfff7f2f2), width: 0),
               image: DecorationImage(
-                image: AssetImage('images/bga.png'),
+                image: AssetImage('images/background.jpg'),
                 fit: BoxFit.cover,
               )),
           child: Column(
@@ -98,7 +241,7 @@ class _BookingPage1State extends State<Booking1Screen> {
                     Image(
                   // ignore: prefer_const_constructors
                   image: AssetImage("images/spot.png"),
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.26,
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
                 ),
@@ -506,7 +649,7 @@ class _BookingPage1State extends State<Booking1Screen> {
                 margin: EdgeInsets.all(0),
                 padding: const EdgeInsets.only(left: 10),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.259,
+                // height: MediaQuery.of(context).size.height * 0.259,
                 decoration: BoxDecoration(
                   color: Color(0x1f000000),
                   shape: BoxShape.rectangle,
@@ -515,7 +658,7 @@ class _BookingPage1State extends State<Booking1Screen> {
                 child: Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(
-                    style: buttonPrimary,
+                    style: buttonBooking,
                     child: Text(
                       'Book Now',
                       style:

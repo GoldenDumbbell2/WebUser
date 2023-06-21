@@ -6,9 +6,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:webspc/Api_service/car_service.dart';
 import 'package:webspc/DTO/section.dart';
+import 'package:webspc/resource/Profile/topup_page.dart';
+import 'package:webspc/resource/Profile/userinfor_page.dart';
 import 'package:webspc/styles/button.dart';
 import '../../Api_service/car_detail_service.dart';
 import '../../DTO/cars.dart';
+import '../../DTO/user.dart';
+import '../Home/View_hisbooking.dart';
+import '../Home/home_page.dart';
+import '../Login&Register/login_page.dart';
+import 'car_register_screen.dart';
 
 // ignore: depend_on_referenced_packages
 
@@ -50,13 +57,153 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
       return ResponsiveBuilder(
         builder: (BuildContext context, SizingInformation sizingInformation) {
           return Scaffold(
+            appBar: AppBar(
+              actions: [
+                Padding(
+                  padding: EdgeInsets.all(0),
+                  child: Row(children: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen(context)));
+                        },
+                        child: Text(
+                          "Home",
+                          style: TextStyle(fontSize: 20, color: Colors.black),
+                        )),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const UserInforScreen()));
+                      },
+                      child: Text(
+                        "Information Account",
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CarDetailScreen()));
+                        },
+                        child: Text(
+                          "Information Car",
+                          style: TextStyle(fontSize: 20, color: Colors.black),
+                        )),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const CarRegisterScreen()));
+                      },
+                      child: Text(
+                        "Register Car",
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TopupScreen(context)));
+                      },
+                      child: Text(
+                        "Top up",
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ViewHistoryPage(context)));
+                      },
+                      child: Text(
+                        "History",
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Do you want to logout?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Session.loggedInUser = Users(userId: "0");
+                                    Session.carUserInfor = Car();
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LoginScreen(context)),
+                                      (route) => false,
+                                    );
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Log Out",
+                          style: TextStyle(fontSize: 20, color: Colors.black),
+                        )),
+                    SizedBox(
+                      width: 300,
+                    )
+                  ]),
+                )
+              ],
+              title: Text(
+                " Smart Parking System",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
             body: SingleChildScrollView(
               child: Container(
                 // width: MediaQuery.of(context).size.width,
                 // height: MediaQuery.of(context).size.height,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                  image: AssetImage('images/bga.png'),
+                  image: AssetImage('images/background.jpg'),
                   fit: BoxFit.cover,
                 )),
                 padding:
@@ -143,7 +290,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         children: <Widget>[
           Container(
             width: sizingInformation.localWidgetSize.width,
-            height: 100,
+            height: 500,
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -153,7 +300,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                         carDetail?.carId == ""
                     ? Image.asset(
                         "images/carrr.png",
-                        fit: BoxFit.cover,
+                        fit: BoxFit.none,
                       )
                     : Image.network(
                         carDetail!.carPaperFront!,
@@ -279,11 +426,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                     const Text(
                       "Car's Name:",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                     ),
-                    Text(carDetail == null || carDetail?.carName == null
-                        ? ""
-                        : carDetail!.carName!),
+                    Text(
+                      carDetail == null || carDetail?.carName == null
+                          ? ""
+                          : carDetail!.carName!,
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -293,11 +443,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                     const Text(
                       "Plate Number:",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                     ),
-                    Text(carDetail == null || carDetail?.carPlate == null
-                        ? ""
-                        : carDetail!.carPlate!),
+                    Text(
+                      carDetail == null || carDetail?.carPlate == null
+                          ? ""
+                          : carDetail!.carPlate!,
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -307,11 +460,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                     const Text(
                       "Color:",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                     ),
-                    Text(carDetail == null || carDetail?.carColor == null
-                        ? ""
-                        : carDetail!.carColor!),
+                    Text(
+                      carDetail == null || carDetail?.carColor == null
+                          ? ""
+                          : carDetail!.carColor!,
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -480,7 +636,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 ],
               ),
             )),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         TextButton(
             onPressed: () {
               if (imageUrlFront.isEmpty && imageUrlBack.isEmpty) {
@@ -599,7 +755,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
     final path = 'filestrorageimage/${uniqueFileName}';
     final file1 = File(fileFront!.path);
-    final ref = FirebaseStorage.instance.ref().child(path);
+    final ref = FirebaseStorage.instanceFor().ref().child(path);
     uploadTask = ref.putFile(file1);
     final snapshot = await uploadTask!.whenComplete(() {});
     imageUrlFront = await snapshot.ref.getDownloadURL();

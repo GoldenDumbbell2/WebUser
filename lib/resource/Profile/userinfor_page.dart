@@ -7,8 +7,15 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:webspc/Api_service/login_service.dart';
 import 'package:webspc/DTO/cars.dart';
 import 'package:webspc/DTO/section.dart';
+import 'package:webspc/resource/Profile/topup_page.dart';
 import 'package:webspc/styles/button.dart';
 import '../../Api_service/car_detail_service.dart';
+import '../../DTO/user.dart';
+import '../Home/View_hisbooking.dart';
+import '../Home/home_page.dart';
+import '../Login&Register/login_page.dart';
+import 'car_detail_screen.dart';
+import 'car_register_screen.dart';
 
 class UserInforScreen extends StatefulWidget {
   static const routeName = '/userScreen';
@@ -84,12 +91,149 @@ class UserInforPageState extends State<UserInforScreen> {
       Size size = MediaQuery.of(context).size;
       var time = DateTime.now();
       return Scaffold(
+        appBar: AppBar(
+          actions: [
+            Padding(
+              padding: EdgeInsets.all(0),
+              child: Row(children: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreen(context)));
+                    },
+                    child: Text(
+                      "Home",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    )),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const UserInforScreen()));
+                  },
+                  child: Text(
+                    "Information Account",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CarDetailScreen()));
+                    },
+                    child: Text(
+                      "Information Car",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    )),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CarRegisterScreen()));
+                  },
+                  child: Text(
+                    "Register Car",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TopupScreen(context)));
+                  },
+                  child: Text(
+                    "Top up",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ViewHistoryPage(context)));
+                  },
+                  child: Text(
+                    "History",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                    onPressed: () {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Do you want to logout?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Session.loggedInUser = Users(userId: "0");
+                                Session.carUserInfor = Car();
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          LoginScreen(context)),
+                                  (route) => false,
+                                );
+                              },
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Log Out",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    )),
+                SizedBox(
+                  width: 300,
+                )
+              ]),
+            )
+          ],
+          title: Text(
+            " Smart Parking System",
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
         body: Container(
           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           constraints: BoxConstraints.expand(),
           decoration: const BoxDecoration(
               image: DecorationImage(
-            image: AssetImage('images/bga.png'),
+            image: AssetImage('images/background.jpg'),
             fit: BoxFit.cover,
           )),
           child: Column(
@@ -100,8 +244,8 @@ class UserInforPageState extends State<UserInforScreen> {
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.only(
-                        left: 150,
-                        right: 15,
+                        left: 930,
+                        // right: 300,
                       ),
                       height: size.height * 0.2 - 1,
                       child: Row(
@@ -123,7 +267,7 @@ class UserInforPageState extends State<UserInforScreen> {
               ),
               Container(
                 height: 680,
-                width: 380,
+                width: 680,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10)),

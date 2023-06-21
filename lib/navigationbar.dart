@@ -11,7 +11,6 @@ import 'DTO/cars.dart';
 import 'DTO/section.dart';
 import 'DTO/user.dart';
 import 'resource/Home/home_page.dart';
-import 'resource/Profile/account_page.dart';
 
 Widget buildBottomNavigationBar(int _currentIndex, BuildContext context) {
   return NavigationDrawer(

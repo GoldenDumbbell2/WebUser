@@ -30,8 +30,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => ViewHistoryPage(context));
     case viewSpotPage.routerName:
       return MaterialPageRoute(builder: (context) => viewSpotPage(context));
-    case ViewUserHistoryPage.routeName:
-      return MaterialPageRoute(builder: (context) => ViewUserHistoryPage());
+    case ViewHistoryPage.routerName:
+      return MaterialPageRoute(
+          builder: (context) => ViewUserHistoryPage(context));
     // case ForgotPasswordScreen.routeName:
     // return MaterialPageRoute(builder: (context) => ForgotPasswordScreen(context));
     default:
