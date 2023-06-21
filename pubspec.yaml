@@ -59,6 +59,7 @@ dependencies:
   firebase_core: ^2.14.0
   firebase_storage: ^11.2.3
   cloud_firestore: ^4.8.1
+  carousel_slider: ^4.2.1
   
   
 
@@ -112,6 +113,7 @@ flutter:
     - images/header-1.gif
     - images/chat.png
     - images/icon_launcher.jpg
+    - images/background.jpg
   #   - images/a_dot_ham.jpeg
 
   

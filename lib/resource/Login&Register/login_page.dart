@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:webspc/resource/Login&Register/forgot_password.dart';
 import '../../Api_service/login_service.dart';
 import 'register_page.dart';
-import '../home_page.dart';
+import '../Home/home_page.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,7 +42,7 @@ class LoginPageState extends State<LoginScreen> {
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
               image: DecorationImage(
-            image: AssetImage('images/bga.png'),
+            image: AssetImage('images/background.jpg'),
             fit: BoxFit.cover,
           )),
           child: Column(
@@ -192,7 +192,7 @@ class LoginPageState extends State<LoginScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const HomeScreen()));
+                                          HomeScreen(context)));
                               _btnLogin.reset();
                             });
                           } else {
