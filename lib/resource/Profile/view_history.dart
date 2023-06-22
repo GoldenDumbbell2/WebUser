@@ -213,7 +213,7 @@ class _ViewUserHistoryPageState extends State<ViewUserHistoryPage> {
                             title: Text(
                               listHistory[index].carPlate ?? '',
                               style: TextStyle(
-                                fontSize: 28,
+                                fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                                 decoration: TextDecoration.none,
@@ -225,7 +225,7 @@ class _ViewUserHistoryPageState extends State<ViewUserHistoryPage> {
                                 Text(
                                   'Time in: ${DateTime.parse(listHistory[index].timeIn ?? '').toString().substring(0, 19)}',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                     decoration: TextDecoration.none,
@@ -234,7 +234,7 @@ class _ViewUserHistoryPageState extends State<ViewUserHistoryPage> {
                                 Text(
                                   'Time out: ${DateTime.parse(listHistory[index].timeOut ?? '').toString().substring(0, 19)}',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                     decoration: TextDecoration.none,

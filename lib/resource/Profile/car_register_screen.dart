@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:webspc/resource/Profile/topup_page.dart';
 import 'package:webspc/resource/Profile/userinfor_page.dart';
+import 'package:webspc/resource/Profile/view_history.dart';
 import '../../Api_service/car_service.dart';
 import '../../DTO/cars.dart';
 import '../../DTO/section.dart';
@@ -134,7 +135,7 @@ class _CarRegisterScreenState extends State<CarRegisterScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ViewHistoryPage(context)));
+                          builder: (context) => ViewUserHistoryPage(context)));
                 },
                 child: Text(
                   "History",

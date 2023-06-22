@@ -17,6 +17,7 @@ import '../Profile/car_detail_screen.dart';
 import '../Profile/car_register_screen.dart';
 import '../Profile/topup_page.dart';
 import '../Profile/userinfor_page.dart';
+import '../Profile/view_history.dart';
 import 'View_hisbooking.dart';
 import 'home_page.dart';
 
@@ -159,7 +160,7 @@ class _BookingPage1State extends State<Booking1Screen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ViewHistoryPage(context)));
+                          builder: (context) => ViewUserHistoryPage(context)));
                 },
                 child: Text(
                   "History",

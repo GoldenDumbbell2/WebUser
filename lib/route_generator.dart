@@ -9,6 +9,8 @@ import 'package:webspc/styles/plash_screen.dart';
 import 'package:webspc/undefined_view.dart';
 import 'package:flutter/material.dart';
 
+import 'resource/Login&Register/reset_password.dart';
+
 Route<dynamic> generateRoute(RouteSettings settings) {
   final arg = settings.arguments;
   switch (settings.name) {
@@ -30,6 +32,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => ViewHistoryPage(context));
     case viewSpotPage.routerName:
       return MaterialPageRoute(builder: (context) => viewSpotPage(context));
+    case ResetPasswordScreen.routeName:
+      return MaterialPageRoute(builder: (context) => ResetPasswordScreen());
     case ViewHistoryPage.routerName:
       return MaterialPageRoute(
           builder: (context) => ViewUserHistoryPage(context));

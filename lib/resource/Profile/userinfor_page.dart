@@ -8,6 +8,7 @@ import 'package:webspc/Api_service/login_service.dart';
 import 'package:webspc/DTO/cars.dart';
 import 'package:webspc/DTO/section.dart';
 import 'package:webspc/resource/Profile/topup_page.dart';
+import 'package:webspc/resource/Profile/view_history.dart';
 import 'package:webspc/styles/button.dart';
 import '../../Api_service/car_detail_service.dart';
 import '../../DTO/user.dart';
@@ -174,7 +175,8 @@ class UserInforPageState extends State<UserInforScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ViewHistoryPage(context)));
+                            builder: (context) =>
+                                ViewUserHistoryPage(context)));
                   },
                   child: Text(
                     "History",

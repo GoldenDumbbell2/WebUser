@@ -283,10 +283,10 @@ class _ViewHistoryPage extends State<ViewHistoryPage> {
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
-                                                                  left: 40,
-                                                                  right: 40,
+                                                                  left: 800,
+                                                                  right: 690,
                                                                   top: 200,
-                                                                  bottom: 300),
+                                                                  bottom: 800),
                                                           child: Container(
                                                               decoration: BoxDecoration(
                                                                   color: Colors
