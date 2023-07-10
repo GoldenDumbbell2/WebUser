@@ -15,6 +15,7 @@ import '../../DTO/user.dart';
 import '../Login&Register/login_page.dart';
 import '../Profile/car_detail_screen.dart';
 import '../Profile/car_register_screen.dart';
+import '../Profile/spc_wallet_page.dart';
 import '../Profile/topup_page.dart';
 import '../Profile/userinfor_page.dart';
 import '../Profile/view_history.dart';
@@ -145,10 +146,10 @@ class _BookingPage1State extends State<Booking1Screen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TopupScreen(context)));
+                          builder: (context) => SPCWalletScreen(context)));
                 },
                 child: Text(
-                  "Top up",
+                  "Sps Wallet",
                   style: TextStyle(fontSize: 20, color: Colors.black),
                 ),
               ),

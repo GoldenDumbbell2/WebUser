@@ -161,7 +161,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 }
                                 phoneNumber = phoneController.text;
                               }
-                              bool check = await LoginService.CheckEmail(
+                              bool check = await LoginService.CheckPhone(
                                 //password: password,
                                 phone: phoneController.text,
                                 //phoneNumber: phoneNumber,

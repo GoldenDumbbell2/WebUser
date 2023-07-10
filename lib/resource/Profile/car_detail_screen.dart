@@ -17,6 +17,8 @@ import '../Home/View_hisbooking.dart';
 import '../Home/home_page.dart';
 import '../Login&Register/login_page.dart';
 import 'car_register_screen.dart';
+import 'spc_wallet_page.dart';
+import 'spot_screen.dart';
 
 // ignore: depend_on_referenced_packages
 
@@ -128,10 +130,26 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TopupScreen(context)));
+                                builder: (context) =>
+                                    SPCWalletScreen(context)));
                       },
                       child: Text(
-                        "Top up",
+                        "Sps Wallet",
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SpotScreen(context)));
+                      },
+                      child: Text(
+                        "Buy Spot",
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
@@ -195,7 +213,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               ],
               title: Text(
                 " Smart Parking System",
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
               ),
             ),
             body: SingleChildScrollView(

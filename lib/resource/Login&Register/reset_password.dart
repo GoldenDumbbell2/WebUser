@@ -231,8 +231,11 @@ class RegisterPageState extends State<ResetPasswordScreen> {
           pass: confirmPassword.toString(),
           phoneNumber: Session.loggedInUser.phoneNumber,
           fullname: Session.loggedInUser.fullname,
+          wallet: Session.loggedInUser.wallet,
           identitiCard: Session.loggedInUser.identitiCard,
-          familyId: Session.loggedInUser.familyId);
+          familyId: Session.loggedInUser.familyId,
+          familyVerify: Session.loggedInUser.familyVerify,
+          roleUser: Session.loggedInUser.roleUser);
       LoginService.ResetPassword(user, Session.loggedInUser.userId!)
           .then((value) => showDialog(
               context: context,

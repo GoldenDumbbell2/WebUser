@@ -18,6 +18,8 @@ import '../Home/View_hisbooking.dart';
 import '../Home/home_page.dart';
 import '../Login&Register/login_page.dart';
 import 'car_detail_screen.dart';
+import 'spc_wallet_page.dart';
+import 'spot_screen.dart';
 
 enum FormData { Name, Plate, Color, PpFront, PpBack }
 
@@ -120,10 +122,25 @@ class _CarRegisterScreenState extends State<CarRegisterScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TopupScreen(context)));
+                          builder: (context) => SPCWalletScreen(context)));
                 },
                 child: Text(
-                  "Top up",
+                  "Sps Wallet",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SpotScreen(context)));
+                },
+                child: Text(
+                  "Buy Spot",
                   style: TextStyle(fontSize: 20, color: Colors.black),
                 ),
               ),
@@ -185,7 +202,8 @@ class _CarRegisterScreenState extends State<CarRegisterScreen> {
         ],
         title: Text(
           " Smart Parking System",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: Container(
@@ -378,51 +396,6 @@ class _CarRegisterScreenState extends State<CarRegisterScreen> {
                             ),
                           ),
                         ),
-                        // const SizedBox(height: 20),
-                        // FadeAnimation(
-                        //   delay: 1,
-                        //   child: Container(
-                        //     width: 300,
-                        //     height: 40,
-                        //     decoration: BoxDecoration(
-                        //         borderRadius: BorderRadius.circular(12.0),
-                        //         color: selected == FormData.PpBack
-                        //             ? enabled
-                        //             : backgroundColor),
-                        //     padding: const EdgeInsets.all(5.0),
-                        //     child: TextField(
-                        //       controller: carIdController,
-                        //       onTap: () {
-                        //         setState(() {
-                        //           selected = FormData.PpBack;
-                        //         });
-                        //       },
-                        //       decoration: InputDecoration(
-                        //           enabledBorder: InputBorder.none,
-                        //           border: InputBorder.none,
-                        //           prefixIcon: Icon(
-                        //             Icons.abc,
-                        //             color: selected == FormData.PpBack
-                        //                 ? enabledtxt
-                        //                 : deaible,
-                        //             size: 20,
-                        //           ),
-                        //           hintText: 'Car Id',
-                        //           hintStyle: TextStyle(
-                        //               color: selected == FormData.PpBack
-                        //                   ? enabledtxt
-                        //                   : deaible,
-                        //               fontSize: 12)),
-                        //       textAlignVertical: TextAlignVertical.center,
-                        //       style: TextStyle(
-                        //           color: selected == FormData.PpBack
-                        //               ? enabledtxt
-                        //               : deaible,
-                        //           fontWeight: FontWeight.bold,
-                        //           fontSize: 12),
-                        //     ),
-                        //   ),
-                        // ),
                         const SizedBox(height: 25),
                         FadeAnimation(
                           delay: 1,
@@ -432,24 +405,30 @@ class _CarRegisterScreenState extends State<CarRegisterScreen> {
                             color: const Color.fromRGBO(20, 160, 240, 1.0),
                             controller: _btnRegisterCar,
                             onPressed: () {
-                              Car newCar = Car(
-                                  carId: null,
-                                  carName: nameController.text,
-                                  carPlate: plateController.text,
-                                  carColor: colorController.text,
-                                  carPaperFront: null,
-                                  carPaperBack: null,
-                                  verifyState1: null,
-                                  verifyState2: null,
-                                  securityCode: "",
-                                  familyId: Session.loggedInUser.familyId);
-                              CarService.registerCar(newCar).then((value) {
-                                carIdController.clear();
-                                nameController.clear();
-                                plateController.clear();
-                                colorController.clear();
+                              if (Session.loggedInUser.familyId == null) {
+                                showError(
+                                    'Only resident in apartment can use this funtion');
                                 _btnRegisterCar.reset();
-                              });
+                              } else {
+                                Car newCar = Car(
+                                    carId: null,
+                                    carName: nameController.text,
+                                    carPlate: plateController.text,
+                                    carColor: colorController.text,
+                                    carPaperFront: null,
+                                    carPaperBack: null,
+                                    verifyState1: null,
+                                    verifyState2: null,
+                                    securityCode: "",
+                                    familyId: Session.loggedInUser.familyId);
+                                CarService.registerCar(newCar).then((value) {
+                                  carIdController.clear();
+                                  nameController.clear();
+                                  plateController.clear();
+                                  colorController.clear();
+                                  _btnRegisterCar.reset();
+                                });
+                              }
                             },
                             child: const Text("Create",
                                 style: TextStyle(
@@ -501,6 +480,26 @@ class _CarRegisterScreenState extends State<CarRegisterScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Error!"),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            new TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

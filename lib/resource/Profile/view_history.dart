@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webspc/Api_service/history_services.dart';
 import 'package:webspc/DTO/history.dart';
+import 'package:webspc/resource/Profile/spc_wallet_page.dart';
+import 'package:webspc/resource/Profile/spot_screen.dart';
 import 'package:webspc/resource/Profile/topup_page.dart';
 import 'package:webspc/resource/Profile/userinfor_page.dart';
 
@@ -114,10 +116,25 @@ class _ViewUserHistoryPageState extends State<ViewUserHistoryPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TopupScreen(context)));
+                              builder: (context) => SPCWalletScreen(context)));
                     },
                     child: Text(
-                      "Top up",
+                      "Sps Wallet",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 50,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SpotScreen(context)));
+                    },
+                    child: Text(
+                      "Buy Spot",
                       style: TextStyle(fontSize: 20, color: Colors.black),
                     ),
                   ),
@@ -181,7 +198,10 @@ class _ViewUserHistoryPageState extends State<ViewUserHistoryPage> {
             ],
             title: Text(
               " Smart Parking System",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
             ),
           ),
           body: Container(
@@ -225,21 +245,31 @@ class _ViewUserHistoryPageState extends State<ViewUserHistoryPage> {
                                 Text(
                                   'Time in: ${DateTime.parse(listHistory[index].timeIn ?? '').toString().substring(0, 19)}',
                                   style: TextStyle(
-                                    fontSize: 30,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                     decoration: TextDecoration.none,
                                   ),
                                 ),
-                                Text(
-                                  'Time out: ${DateTime.parse(listHistory[index].timeOut ?? '').toString().substring(0, 19)}',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
+                                listHistory[index].timeOut == null
+                                    ? Text(
+                                        'Time out:',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      )
+                                    : Text(
+                                        'Time out: ${DateTime.parse(listHistory[index].timeOut ?? '').toString().substring(0, 19)}',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      ),
                               ],
                             ),
                             trailing: Text(

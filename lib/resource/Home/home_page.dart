@@ -10,6 +10,7 @@ import 'package:webspc/resource/Home/View_hisbooking.dart';
 import 'package:webspc/resource/Profile/view_history.dart';
 import 'package:webspc/styles/button.dart';
 import '../../Api_service/car_detail_service.dart';
+import '../../DTO/Qr.dart';
 import '../../DTO/cars.dart';
 import '../../DTO/section.dart';
 import 'dart:math';
@@ -18,8 +19,11 @@ import '../../DTO/user.dart';
 import '../Login&Register/login_page.dart';
 import '../Profile/car_detail_screen.dart';
 import '../Profile/car_register_screen.dart';
+import '../Profile/spc_wallet_page.dart';
+import '../Profile/spot_screen.dart';
 import '../Profile/topup_page.dart';
 import '../Profile/userinfor_page.dart';
+import 'family_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
@@ -68,6 +72,12 @@ class HomePageState extends State<HomeScreen> {
     CarDetailService.getListCar().then((response) => setState(() {
           listCar = response;
         }));
+  }
+
+  String formatCurrency(double n) {
+    // Add comma to separate thousands
+    var currency = NumberFormat("#,##0", "vi_VN");
+    return currency.format(n);
   }
 
   Widget build(BuildContext context) {
@@ -143,10 +153,25 @@ class HomePageState extends State<HomeScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TopupScreen(context)));
+                          builder: (context) => SPCWalletScreen(context)));
                 },
                 child: Text(
-                  "Top up",
+                  "Sps Wallet",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 50,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SpotScreen(context)));
+                },
+                child: Text(
+                  "Buy Spot",
                   style: TextStyle(fontSize: 20, color: Colors.black),
                 ),
               ),
@@ -417,7 +442,18 @@ class HomePageState extends State<HomeScreen> {
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 35,
-                                  fontWeight: FontWeight.bold))
+                                  fontWeight: FontWeight.bold)),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            '${formatCurrency(Session.loggedInUser.wallet!)} VND',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       )),
                 ),
@@ -466,14 +502,13 @@ class HomePageState extends State<HomeScreen> {
                     child: ElevatedButton.icon(
                       style: buttonPrimary,
                       onPressed: () {
-                        Navigator.pushNamed(
-                            context, ViewHistoryPage.routerName);
+                        Navigator.pushNamed(context, FamilyScreen.routerName);
                       },
                       icon: Icon(
                         Icons.history_edu,
                         size: 50,
                       ),
-                      label: Text('YOUR BOOKING',
+                      label: Text('FAMILY',
                           style: TextStyle(
                               fontSize: 30, fontWeight: FontWeight.bold)),
                     ),
@@ -619,8 +654,16 @@ class HomePageState extends State<HomeScreen> {
                                                             BarcodeQRCorrectionLevel
                                                                 .high,
                                                       ),
-                                                      data:
-                                                          'carplate: ${dropdownValue?.carPlate} \ntime: $currentTime \nHint code: $Codesecurity',
+                                                      data: QrToJson(Qrcode(
+                                                          carplate:
+                                                              dropdownValue
+                                                                  ?.carPlate,
+                                                          datetime: currentTime,
+                                                          securityCode:
+                                                              Codesecurity,
+                                                          username: Session
+                                                              .loggedInUser
+                                                              .fullname)),
                                                       width: 200,
                                                       height: 200,
                                                     ),
@@ -723,203 +766,6 @@ class HomePageState extends State<HomeScreen> {
           ],
         ),
       ),
-      // floatingActionButton: Container(
-      //   decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
-      //     BoxShadow(color: Colors.white, spreadRadius: 7, blurRadius: 1)
-      //   ]),
-      //   child: FloatingActionButton(
-      //     onPressed: () {
-      //       setState(() {
-      //         code = dropdownValue?.carPlate;
-      //         var rng = Random();
-      //         for (var i = 100000; i < 1000000; i++) {
-      //           Codesecurity = rng.nextInt(1000000).toString();
-      //           break;
-      //         }
-
-      //         DateTime now = DateTime.now();
-      //         String formattedDate =
-      //             DateFormat('yyyy-MM-dd – kk:mm').format(now);
-      //       });
-      //       if (dropdownValue?.carPlate == null) {
-      //         showDialog(
-      //             context: context,
-      //             builder: (context) => Form(
-      //                     child: Padding(
-      //                   padding: const EdgeInsets.only(
-      //                       left: 60, right: 60, top: 350, bottom: 400),
-      //                   child: Container(
-      //                     padding: EdgeInsets.only(left: 9, top: 30),
-      //                     decoration: BoxDecoration(
-      //                         color: Colors.white.withOpacity(0.8),
-      //                         border: Border.all(
-      //                             width: 2.0,
-      //                             color: Color.fromARGB(100, 161, 125, 17)),
-      //                         borderRadius: BorderRadius.circular(10)),
-      //                     child: const Text(
-      //                       "Please choose your car!",
-      //                       style: TextStyle(
-      //                           fontSize: 20,
-      //                           decoration: TextDecoration.none,
-      //                           color: Colors.black),
-      //                     ),
-      //                   ),
-      //                 )));
-      //       } else if (dropdownValue?.verifyState1 == null ||
-      //           dropdownValue?.verifyState1 == false) {
-      //         showDialog(
-      //             context: context,
-      //             builder: (context) => Form(
-      //                     child: Padding(
-      //                   padding: const EdgeInsets.only(
-      //                       left: 40, right: 40, top: 350, bottom: 390),
-      //                   child: Container(
-      //                     padding: EdgeInsets.only(left: 9),
-      //                     decoration: BoxDecoration(
-      //                         color: Colors.white.withOpacity(0.8),
-      //                         border: Border.all(
-      //                             width: 2.0,
-      //                             color: Color.fromARGB(100, 161, 125, 17)),
-      //                         borderRadius: BorderRadius.circular(10)),
-      //                     child: const Text(
-      //                       "*Your car is not authenticated state 1!\n*Please waiting for admin to authenticated state 1",
-      //                       style: TextStyle(
-      //                           fontSize: 20,
-      //                           decoration: TextDecoration.none,
-      //                           color: Colors.black),
-      //                     ),
-      //                   ),
-      //                 )));
-      //       } else {
-      //         showDialog(
-      //             context: context,
-      //             builder: (context) => Form(
-      //                     child: Padding(
-      //                   padding: const EdgeInsets.only(
-      //                       left: 60, right: 60, top: 150, bottom: 200),
-      //                   child: Container(
-      //                       height: 5,
-      //                       width: 5,
-      //                       decoration: BoxDecoration(
-      //                           color: Colors.white,
-      //                           border: Border.all(
-      //                               width: 2.0,
-      //                               color: Color.fromARGB(100, 161, 125, 17)),
-      //                           borderRadius: BorderRadius.circular(10)),
-      //                       child: Column(
-      //                         crossAxisAlignment: CrossAxisAlignment.center,
-      //                         children: [
-      //                           SizedBox(
-      //                             height: 30,
-      //                           ),
-      //                           const Text('Your QR Code',
-      //                               style: TextStyle(
-      //                                   decoration: TextDecoration.none,
-      //                                   color: Colors.black,
-      //                                   fontSize: 30,
-      //                                   fontWeight: FontWeight.bold)),
-      //                           SizedBox(
-      //                             height: 10,
-      //                           ),
-      //                           Container(
-      //                             padding: EdgeInsets.only(
-      //                               left: 20,
-      //                               right: 20,
-      //                             ),
-      //                             child: Text(
-      //                                 'Please present your QR code to the parking lot',
-      //                                 style: TextStyle(
-      //                                   decoration: TextDecoration.none,
-      //                                   color: Colors.grey,
-      //                                   fontSize: 8,
-      //                                 )),
-      //                           ),
-      //                           SizedBox(
-      //                             height: 30,
-      //                           ),
-      //                           code == ''
-      //                               ? Text('')
-      //                               : BarcodeWidget(
-      //                                   barcode: Barcode.qrCode(
-      //                                     errorCorrectLevel:
-      //                                         BarcodeQRCorrectionLevel.high,
-      //                                   ),
-      //                                   data:
-      //                                       'carplate: ${dropdownValue?.carPlate} \ntime: $currentTime \nHint code: $Codesecurity',
-      //                                   width: 200,
-      //                                   height: 200,
-      //                                 ),
-      //                           SizedBox(
-      //                             height: 30,
-      //                           ),
-      //                           Container(
-      //                             padding: EdgeInsets.only(
-      //                               left: 60,
-      //                               // right: 60,
-      //                             ),
-      //                             child: Row(
-      //                               children: <Widget>[
-      //                                 Image.asset(
-      //                                   'images/carrr.png',
-      //                                   fit: BoxFit.cover,
-      //                                   width: 30,
-      //                                   height: 30,
-      //                                 ),
-      //                                 SizedBox(
-      //                                   width: 10,
-      //                                 ),
-      //                                 Text('${dropdownValue?.carPlate}',
-      //                                     style: const TextStyle(
-      //                                         decoration: TextDecoration.none,
-      //                                         color: Colors.black,
-      //                                         fontWeight: FontWeight.bold,
-      //                                         fontSize: 20)),
-      //                               ],
-      //                             ),
-      //                           ),
-      //                           SizedBox(
-      //                             height: 30,
-      //                           ),
-      //                           Container(
-      //                             height: 50,
-      //                             width: 250,
-      //                             decoration: BoxDecoration(
-      //                                 color: Colors.white,
-      //                                 border: Border.all(
-      //                                     width: 3.0, color: Colors.blue),
-      //                                 borderRadius: BorderRadius.circular(5)),
-      //                             child: Column(
-      //                               children: [
-      //                                 Text(
-      //                                   'Time In',
-      //                                   style: TextStyle(
-      //                                       decoration: TextDecoration.none,
-      //                                       fontSize: 15,
-      //                                       fontWeight: FontWeight.bold,
-      //                                       color: Colors.black),
-      //                                 ),
-      //                                 Text(
-      //                                   "${now}",
-      //                                   style: TextStyle(
-      //                                       decoration: TextDecoration.none,
-      //                                       fontSize: 15,
-      //                                       fontWeight: FontWeight.bold,
-      //                                       color: Color.fromARGB(
-      //                                           255, 26, 145, 243)),
-      //                                 )
-      //                               ],
-      //                             ),
-      //                           )
-      //                         ],
-      //                       )),
-      //                 )));
-      //       }
-      //       ;
-      //     },
-      //     child: const Icon(Icons.qr_code),
-      //   ),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

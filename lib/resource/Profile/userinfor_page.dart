@@ -7,10 +7,13 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:webspc/Api_service/login_service.dart';
 import 'package:webspc/DTO/cars.dart';
 import 'package:webspc/DTO/section.dart';
+import 'package:webspc/resource/Profile/spc_wallet_page.dart';
+import 'package:webspc/resource/Profile/spot_screen.dart';
 import 'package:webspc/resource/Profile/topup_page.dart';
 import 'package:webspc/resource/Profile/view_history.dart';
 import 'package:webspc/styles/button.dart';
 import '../../Api_service/car_detail_service.dart';
+import '../../Api_service/user_infor_service.dart';
 import '../../DTO/user.dart';
 import '../Home/View_hisbooking.dart';
 import '../Home/home_page.dart';
@@ -62,26 +65,6 @@ class UserInforPageState extends State<UserInforScreen> {
             carDetail = listCar.first;
           }
         }));
-  }
-
-  Future updatePhoneNumber(String phoneNumber) {
-    userId = Session.loggedInUser.userId;
-    final body = jsonEncode(<String, String>{
-      'userId': Session.loggedInUser.userId!,
-      'phoneNumber': phoneNumber,
-      'email': Session.loggedInUser.email!,
-      'pass': Session.loggedInUser.pass!,
-      'fullname': Session.loggedInUser.fullname!,
-      'identitiCard': Session.loggedInUser.identitiCard!,
-      'familyId': Session.loggedInUser.familyId!,
-    });
-    return put(
-      Uri.parse('https://primaryapinew.azurewebsites.net/api/TbUsers/$userId'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: body,
-    );
   }
 
   @override
@@ -160,10 +143,25 @@ class UserInforPageState extends State<UserInforScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TopupScreen(context)));
+                            builder: (context) => SPCWalletScreen(context)));
                   },
                   child: Text(
-                    "Top up",
+                    "Sps Wallet",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SpotScreen(context)));
+                  },
+                  child: Text(
+                    "Buy Spot",
                     style: TextStyle(fontSize: 20, color: Colors.black),
                   ),
                 ),
@@ -227,7 +225,8 @@ class UserInforPageState extends State<UserInforScreen> {
           ],
           title: Text(
             " Smart Parking System",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         body: Container(
@@ -529,8 +528,42 @@ class UserInforPageState extends State<UserInforScreen> {
                                                 controller: _btnSave,
                                                 onPressed: () {
                                                   if (textFiledPhone != null) {
-                                                    updatePhoneNumber(
-                                                            textFiledPhone!)
+                                                    Users user = Users(
+                                                        userId: Session
+                                                            .loggedInUser
+                                                            .userId,
+                                                        email: Session
+                                                            .loggedInUser.email,
+                                                        pass: Session
+                                                            .loggedInUser.pass,
+                                                        phoneNumber:
+                                                            textFiledPhone
+                                                                .toString(),
+                                                        fullname: Session
+                                                            .loggedInUser
+                                                            .fullname,
+                                                        identitiCard: Session
+                                                            .loggedInUser
+                                                            .identitiCard,
+                                                        familyId: Session
+                                                            .loggedInUser
+                                                            .familyId,
+                                                        wallet: Session
+                                                            .loggedInUser
+                                                            .wallet,
+                                                        paymentStatus: Session
+                                                            .loggedInUser
+                                                            .paymentStatus,
+                                                        familyVerify: Session
+                                                            .loggedInUser
+                                                            .familyVerify,
+                                                        roleUser: Session
+                                                            .loggedInUser
+                                                            .roleUser);
+                                                    UserInforService.updateUser(
+                                                            user,
+                                                            Session.loggedInUser
+                                                                .userId!)
                                                         .then((value) =>
                                                             loading());
                                                   }

@@ -1,5 +1,6 @@
 import 'package:webspc/resource/Home/BookingScreen.dart';
 import 'package:webspc/resource/Home/View_hisbooking.dart';
+import 'package:webspc/resource/Home/family_screen.dart';
 import 'package:webspc/resource/Home/home_page.dart';
 import 'package:webspc/resource/Profile/view_history.dart';
 import 'package:webspc/resource/Login&Register/login_page.dart';
@@ -37,6 +38,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ViewHistoryPage.routerName:
       return MaterialPageRoute(
           builder: (context) => ViewUserHistoryPage(context));
+    case FamilyScreen.routerName:
+      return MaterialPageRoute(builder: (context) => FamilyScreen(context));
     // case ForgotPasswordScreen.routeName:
     // return MaterialPageRoute(builder: (context) => ForgotPasswordScreen(context));
     default:
